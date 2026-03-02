@@ -1,28 +1,33 @@
-# Python
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-*.egg-info/
-build/
-dist/
-
-# Virtual envs
+# Environments
 .venv/
 venv/
-ENV/
-env/
+**/.venv/
+**/venv/
+
+# Build artifacts
+build/
+dist/
+**/build/
+**/dist/
 
 # Logs
 logs/
+**/logs/
 *.log
 
-# OS/Editors
-.vscode/
-.DS_Store
-Thumbs.db
+# Python cache
+__pycache__/
+**/__pycache__/
+*.pyc
 
-# Secrets / local configs
+# Packaging metadata
+*.egg-info/
+**/*.egg-info/
+
+# Secrets
 config.json
 *.env
 .env
+
+# VSCode (opcional: jo el deixaria fora del repo)
+.vscode/
