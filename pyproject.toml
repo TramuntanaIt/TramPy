@@ -1,0 +1,11 @@
+[project]
+name = "TramPy"              # nombre visible (puede tener mayúsculas)
+version = "0.1.0"
+description = "Framework ETL interno Grup Tramuntana"
+authors = [{name="Grup Tramuntana"}]
+dependencies = [
+    "python-dotenv"
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]

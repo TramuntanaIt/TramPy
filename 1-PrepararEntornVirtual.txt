@@ -1,0 +1,61 @@
+
+### PER ENTORN GENERAL ###
+# Per assegurar que tenim el pip
+    python -m ensurepip --upgrade
+
+# Crear l'entorn virtual
+python -m venv venv
+
+# Activar-lo (Windows)
+.\venv\Scripts\activate
+
+# Des de l'arrel
+    pip install -e .
+    python 
+        import trampy  (això hauria de funcionar per validar-ho)
+
+python -m pip install --upgrade pip setuptools wheel
+
+#### PER CADA PROJECTE ###
+
+    cd apps/projecte
+    python -m venv .venv
+    .\venv\Scripts\activate
+    pip install -r requirements.txt
+    pip install -e ../..
+    python -m pip install pyinstaller
+    python.exe -m pip install --upgrade pip
+
+    # per guardar les dependències amb les versions que ara estan funcionant
+    pip freeze > requirements.lock.txt  
+    # d'aquí un temps es pot fer un: pip install -r requirements.lock.txt
+    
+
+
+    # Per crear executable
+        # 1. Neteja carpetes anteriors
+        rmdir /s /q build dist
+
+        # 2. Genera l'executable
+            ## sense .spec (el crearà la primera vegada)
+            python -m PyInstaller --onefile --name TramMinewSync --icon LogoTramuntana.ico main.py
+
+            ## amb .spec creat al punt anterior
+            python -m PyInstaller --clean TramMinewSync.spec
+
+
+#### PER CREAR GIT ###
+
+    cd c:\VisualStudioCode\TramPy
+    git init
+
+    # creem .gitignore
+
+    # configurem identitat del git
+    git config --global user.name "El Teu Nom"
+    git config --global user.email "el_teu_email@domini.com"
+
+    # ho validem
+    git status 
+    
+

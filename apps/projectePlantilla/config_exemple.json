@@ -1,0 +1,15 @@
+{
+    "SMTP_HOST": "smtp.office365.com",
+    "SMTP_PORT": 587,
+    "SMTP_USE_STARTTLS": true,
+    "SMTP_USE_SSL": false,
+    "SMTP_USER": "alertes@empresa.com",
+    "SMTP_PASS": "ENCRYPTED:....",
+    "SMTP_FROM": "TramPy Alerts <alertes@empresa.com>",
+    "SMTP_TIMEOUT_SEC": 20,
+
+    "ALERT_EMAIL_TO": ["it@empresa.com", "marius@empresa.com"],
+    "ALERT_EMAIL_CC": [],
+    "ALERT_ON_ERROR": true,
+    "ALERT_ATTACH_LOG": true
+}
