@@ -20,7 +20,8 @@ class ProjectConfig(BaseConfigLoader):
             "MINEW_DB_NAME": "db_name",
             "MINEW_DB_USER": "db_user",
             "MINEW_DB_PASS": "enc:db_encrypted_pass",
-            "MINEW_DB_BOTIGA": "db_defaultPriceLocation"            
+            "MINEW_DB_BOTIGA": "db_defaultPriceLocation",
+            "MINEW_DB_EMPRESA": "VDF"            
         }
         
         self.ensure_config_exists(plantilla)

@@ -63,9 +63,11 @@ def executar_sincronitzacio():
                 db_preu_general_normal = None
                 db_preu_general_oferta = None
                 db_descripcioCAT = None
+                db_pesVariable = None
+                db_empresa = cfg.get("MINEW_DB_EMPRESA")
 
                 # Consulta Preu Botiga
-                params_sp = [sd_codi_art, sd_unitat, sd_codi_bot]
+                params_sp = [sd_codi_art, sd_unitat, sd_codi_bot, db_empresa]
                 cursor = db.execute_stored_procedure("BC_PreuProducteUMBotigaSP", params_sp)
                 if cursor:
                     row = cursor.fetchone()
@@ -73,10 +75,13 @@ def executar_sincronitzacio():
                         db_preu_botiga_normal = row.PreuNormal
                         db_preu_botiga_oferta = row.PreuOferta
                         db_descripcioCAT = row.Descripcio
+                        db_empresa = row.Empresa
+                        db_pesVariable = row.PesVariable
+
                     cursor.close()
 
                 # Consulta Preu General (TIENDA)
-                params_tienda = [sd_codi_art, sd_unitat, cfg.get("MINEW_DB_BOTIGA_DEFAULT", "TIENDA")]
+                params_tienda = [sd_codi_art, sd_unitat, cfg.get("MINEW_DB_BOTIGA", "TIENDA"), db_empresa]
                 cursor = db.execute_stored_procedure("BC_PreuProducteUMBotigaSP", params_tienda)
                 if cursor:
                     row = cursor.fetchone()
@@ -85,7 +90,15 @@ def executar_sincronitzacio():
                         db_preu_general_oferta = row.PreuOferta
                         if db_descripcioCAT is None:
                             db_descripcioCAT = row.Descripcio
+                        db_empresa = row.Empresa
+                        db_pesVariable = row.PesVariable
                     cursor.close()
+
+                # Empresa
+                api_empresa = db_empresa
+
+                # Pes Variable
+                api_pesVariable = db_pesVariable
 
                 # Lògica de selecció de preus
                 db_preu_oferta = db_preu_botiga_oferta or db_preu_botiga_normal or db_preu_general_oferta or 0
@@ -131,6 +144,8 @@ def executar_sincronitzacio():
                     sd_preu_ofertatxt != api_preu_ofertatxt or
                     # str(storeData.get("preuFinal", "")) != api_preu_oferta or 
                     # str(storeData.get("preuAntic", "")) != api_preu_normal or
+                    str(storeData.get("empresa", "")) != api_empresa or
+                    str(storeData.get("pesVariable", "")) != api_pesVariable or
                     str(storeData.get("descripcioCAT", "")) != api_descripcioCAT or
                     str(storeData.get("descripcioFR", "")) != api_descripcioFR or
                     str(storeData.get("descompte", "")) != api_descompte):
@@ -140,13 +155,11 @@ def executar_sincronitzacio():
                         "id": storeData.get("id"),
                         "preuOfertaTxt": api_preu_ofertatxt,
                         "preuNormalTxt": api_preu_normaltxt,
-                        # "preuFinal": api_preu_oferta,
-                        # "preuFinalMoneda": api_preu_oferta_moneda,
-                        # "preuAntic": api_preu_normal,
-                        # "preuAnticMoneda": api_preu_normal_moneda,
                         "descripcioCAT": api_descripcioCAT,
                         "descripcioFR": api_descripcioFR,
-                        "descompte": api_descompte
+                        "descompte": api_descompte,
+                        "empresa": api_empresa,
+                        "pesVariable": api_pesVariable
                     }
                     
                     api.post(cfg.get("MINEW_API_UPDATEGOODS", "/esl/goods/updateToStore"), data=payload)

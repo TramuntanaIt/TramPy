@@ -57,5 +57,62 @@ python -m pip install --upgrade pip setuptools wheel
 
     # ho validem
     git status 
-    
+
+    # Creem repositori al GitHub i copiem url
+    git remote add origin https://github.com/el-teu-usuari/TramPy.git
+    git branch -M main
+    git push -u origin main
+
+    # validar que està connectat
+    git remote -v
+
+# GESTIO DE VERSIONS AL GIT
+
+Regla de versions (SemVer) MAJOR.MINOR.PATCH → 1.2.3
+    MAJOR: canvis incompatibles (breaking)
+    MINOR: funcionalitat nova compatible
+    PATCH: bugfix compatible
+
+Per una app ETL:
+
+    canvis en payload/format, canvis de config incompatibles → MAJOR
+    afegir funcionalitat (ex: mail) mantenint compatibilitat → MINOR
+    arreglar bugs → PATCH
+
+    # afegir tag
+    git tab -a tramMinewSync/v1.0.0 -m "tramMinewSync v1.0.0"
+
+    # pujar tags al github
+    git push origin --tags
+
+    # pujar un tag concret al github
+    git push origin tramMinewSync/v1.0.0
+
+    # veure tags
+    git tag
+
+
+    # posar versió 0.1.0 a TramPy  
+        Modificar pyproject.toml
+
+        # commit del framwork
+        git add pyproject.toml
+        git commit -m "release(trampy): v0.1.0"
+
+        # crear tag del Framework
+        git tag -a trampy/v0.1.0 -m "trampy v0.1.0"
+
+    # tramMinewSync (app) → 0.1.0
+        crear/modificar fitxer VERSIONS
+
+        # commit de l'app
+        git add apps/tramMinewSync/VERSION
+        git commit -m "release(tramMinewSync): v0.1.0"
+
+        # crear tag de l'app
+        git tag -a tramMinewSync/v0.1.0 -m "tramMinewSync v0.1.0"
+
+    # per acabar, pujar-ho tot al git
+    git push
+    git push --tags
 
