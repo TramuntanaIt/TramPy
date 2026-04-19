@@ -64,6 +64,8 @@ def executar_sincronitzacio():
                 db_preu_general_oferta = None
                 db_descripcioCAT = None
                 db_pesVariable = None
+                db_categoria = None
+                db_grupProducte = None
                 db_empresa = cfg.get("MINEW_DB_EMPRESA")
 
                 # Consulta Preu Botiga
@@ -77,6 +79,8 @@ def executar_sincronitzacio():
                         db_descripcioCAT = row.Descripcio
                         db_empresa = row.Empresa
                         db_pesVariable = row.PesVariable
+                        db_categoria = row.Categoria
+                        db_grupProducte = row.GrupProducte
 
                     cursor.close()
 
@@ -92,6 +96,8 @@ def executar_sincronitzacio():
                             db_descripcioCAT = row.Descripcio
                         db_empresa = row.Empresa
                         db_pesVariable = row.PesVariable
+                        db_categoria = row.Categoria
+                        db_grupProducte = row.GrupProducte
                     cursor.close()
 
                 # Empresa
@@ -129,15 +135,17 @@ def executar_sincronitzacio():
                     #dte_truncat = int(dte_real * 10) / 10
                     #api_descompte = f"{dte_truncat:.0f}%"
 
-                api_descripcioCAT = storeData.get("descripcioCAT") or db_descripcioCAT or ""
-                api_descripcioFR = storeData.get("descripcioFR") or ""
+                api_descripcioCAT = db_descripcioCAT or ""
+                # api_descripcioFR = storeData.get("descripcioFR") or ""
+                api_categoria = db_categoria
+                api_grupProducte = db_grupProducte
 
                 # --- LÒGICA DE TRADUCCIÓ ---
-                if api_descripcioCAT and (not api_descripcioFR or api_descripcioFR.strip() == ""):
-                    try:
-                        api_descripcioFR = GoogleTranslator(source='ca', target='fr').translate(api_descripcioCAT)
-                    except Exception as e:
-                        log.error(f"Error traduint {sd_codi_art}: {e}")
+                # if api_descripcioCAT and (not api_descripcioFR or api_descripcioFR.strip() == ""):
+                #     try:
+                #         api_descripcioFR = GoogleTranslator(source='ca', target='fr').translate(api_descripcioCAT)
+                #     except Exception as e:
+                #         log.error(f"Error traduint {sd_codi_art}: {e}")
 
                 # Comparació de canvis i enviament
                 if (sd_preu_normaltxt != api_preu_normaltxt or
@@ -147,7 +155,9 @@ def executar_sincronitzacio():
                     str(storeData.get("empresa", "")) != api_empresa or
                     str(storeData.get("pesVariable", "")) != api_pesVariable or
                     str(storeData.get("descripcioCAT", "")) != api_descripcioCAT or
-                    str(storeData.get("descripcioFR", "")) != api_descripcioFR or
+                    # str(storeData.get("descripcioFR", "")) != api_descripcioFR or
+                    str(storeData.get("categoria", "")) != api_categoria or
+                    str(storeData.get("grupProducte", "")) != api_grupProducte or
                     str(storeData.get("descompte", "")) != api_descompte):
                     
                     payload = {
@@ -156,14 +166,16 @@ def executar_sincronitzacio():
                         "preuOfertaTxt": api_preu_ofertatxt,
                         "preuNormalTxt": api_preu_normaltxt,
                         "descripcioCAT": api_descripcioCAT,
-                        "descripcioFR": api_descripcioFR,
+                        "categoria": api_categoria,
+                        "grupProducte": api_grupProducte,
+                        # "descripcioFR": api_descripcioFR,
                         "descompte": api_descompte,
                         "empresa": api_empresa,
                         "pesVariable": api_pesVariable
                     }
                     
                     api.post(cfg.get("MINEW_API_UPDATEGOODS", "/esl/goods/updateToStore"), data=payload)
-                    log.info(f"✅ Actualitzat {sd_codi_art} {sd_unitat} {sd_codi_bot} ({sd_preu_normaltxt} : {sd_preu_ofertatxt}) -> ({api_preu_normaltxt} : {api_preu_ofertatxt})")
+                    log.info(f"✅ Actualitzat {sd_codi_art} {sd_unitat} {sd_codi_bot} ({sd_preu_normaltxt} : {sd_preu_ofertatxt}) -> ({api_preu_normaltxt} : {api_preu_ofertatxt}) {api_descripcioCAT}")
 
     except Exception as e:
         log.error(f"Error en el procés: {e}", exc_info=True)

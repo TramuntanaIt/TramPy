@@ -32,7 +32,7 @@ python -m pip install --upgrade pip setuptools wheel
     
 
 
-    # Per crear executable
+    # Per crear executable (des de la carpeta del projecte que volem)
         # 1. Neteja carpetes anteriors
         rmdir /s /q build dist
 
