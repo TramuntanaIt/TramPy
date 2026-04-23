@@ -2,7 +2,7 @@ import sys
 from trampy.core.logger import setup_custom_logger
 from trampy.core.db_client import UniversalDBClient
 from config_loader_minew import ProjectConfig
-from trampy.connectors.minew_api import MinewAPIClient
+from connectors.minew_api import MinewAPIClient
 from sync_system import sincronitzar_system
 from sync_botigues import sincronitzar_botigues
 
