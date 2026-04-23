@@ -23,3 +23,9 @@ class BaseAPIClient:
         json_payload = data if data is not None else {}
         response = self.session.post(url, json=json_payload)
         return self._check_response(response)
+
+    def put(self, endpoint, data=None):
+        url = f"{self.base_url}/{endpoint.lstrip('/')}"
+        json_payload = data if data is not None else {}
+        response = self.session.put(url, json=json_payload)
+        return self._check_response(response)

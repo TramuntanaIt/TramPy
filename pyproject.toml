@@ -1,6 +1,6 @@
 [project]
 name = "TramPy"              # nombre visible (puede tener mayúsculas)
-version = "0.1.0"
+version = "0.1.2"
 description = "Framework ETL intern Grup Tramuntana"
 authors = [{name="Grup Tramuntana"}]
 dependencies = [

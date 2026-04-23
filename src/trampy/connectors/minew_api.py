@@ -19,19 +19,24 @@ class MinewAPIClient(BaseAPIClient):
         response_json = getattr(super(), method)(endpoint, **kwargs)
         
         internal_code = response_json.get("code")
-        if internal_code != 200:
+        total_count = response_json.get("totalCount") or response_json.get("totalNum") or None
+        # if internal_code != 200 or total_count == None or total_count == 0:
+        if internal_code == 200 or (total_count is not None and total_count > 0):
+            # Retornem la clau específica que ens han demanat (data, items, etc.)
+            return response_json.get(data_key)
+        else:
             msg = response_json.get("msg", "Error desconegut")
             self.log.error(f"API Error (Codi {internal_code}): {msg}")
             raise Exception(f"API Error: {msg}")
-                
-        # Retornem la clau específica que ens han demanat (data, items, etc.)
-        return response_json.get(data_key)
 
     def get(self, endpoint, data_key="data", params=None):
         return self.request_data('get', endpoint, data_key=data_key, params=params)
 
     def post(self, endpoint, data_key="data", data=None):
         return self.request_data('post', endpoint, data_key=data_key, data=data)
+
+    def put(self, endpoint, data_key="data", data=None):
+        return self.request_data('put', endpoint, data_key=data_key, data=data)
 
     def login(self, username, password):
         """

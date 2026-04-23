@@ -3,7 +3,7 @@ import logging
 import os
 
 class UniversalDBClient:
-    def __init__(self, dbServer, dbName, dbUser, dbPass, dbDriver = '{ODBC Driver 17 for SQL Server}' ):
+    def __init__(self, dbServer, dbName, dbUser, dbPass, dbDriver = '{ODBC Driver 18 for SQL Server}' ):
         self.log = logging.getLogger(__name__)
         self.conn = None
         self.server = dbServer

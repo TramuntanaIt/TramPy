@@ -3,6 +3,7 @@ Per treballar:
 - primer hem de buscar tots els camps personalitzats i guardar-los
 - per afegir un "Store Data" nou, omplim els que calguin, però els enviem tots. S'haurà d'iniciar el valor segons el tipus
 
+
 Per generar executable:
 
     c:\visualstudiocode\TramPy\apps\TramMinewSync> .\.venv\Scripts\activate

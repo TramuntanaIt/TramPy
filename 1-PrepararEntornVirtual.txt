@@ -1,7 +1,17 @@
 
+instal·lar git a windows: https://git-scm.com/install/windows
+
+configurar-lo:
+    git config --global user.name "Jesus Conesa"
+    git config --global user.email "jconesa@latramuntana.com"
+
+descarregar el projecte:
+    c:\Projectes\python>  git clone https://github.com/TramuntanaIt/TramPy.git
+
 ### PER ENTORN GENERAL ###
 # Per assegurar que tenim el pip
     python -m ensurepip --upgrade
+    python -m pip install --upgrade pip setuptools wheel
 
 # Crear l'entorn virtual
 python -m venv venv
@@ -14,13 +24,15 @@ python -m venv venv
     python 
         import trampy  (això hauria de funcionar per validar-ho)
 
-python -m pip install --upgrade pip setuptools wheel
+
+# Desactivar-lo
+    .\venv\Scripts\deactivate.bat
 
 #### PER CADA PROJECTE ###
 
     cd apps/projecte
     python -m venv .venv
-    .\venv\Scripts\activate
+    .\.venv\Scripts\activate 
     pip install -r requirements.txt
     pip install -e ../..
     python -m pip install pyinstaller
@@ -80,7 +92,7 @@ Per una app ETL:
     arreglar bugs → PATCH
 
     # afegir tag
-    git tab -a tramMinewSync/v1.0.0 -m "tramMinewSync v1.0.0"
+    git tag -a tramMinewSync/v1.0.0 -m "tramMinewSync v1.0.0"
 
     # pujar tags al github
     git push origin --tags
