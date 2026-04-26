@@ -1,5 +1,5 @@
 [project]
 name = "tramMinewSync"
-version = "0.2.0"
+version = "0.3.0"
 description = "Sincronització de dades entre Minew i sistema intern (Grup Tramuntana)"
 authors = [{name="Grup Tramuntana"}]
