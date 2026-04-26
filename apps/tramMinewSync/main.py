@@ -1,6 +1,7 @@
 import sys
 from trampy.core.logger import setup_custom_logger
 from trampy.core.db_client import UniversalDBClient
+from trampy.core.mailer import SMTPSettings, EmailClient
 from config_loader_minew import ProjectConfig
 from connectors.minew_api import MinewAPIClient
 from sync_system import sincronitzar_system
@@ -26,6 +27,36 @@ def mode_encriptacio():
     print("="*50 + "\n")
 
 
+def _enviar_notificacio_altes(altes, log):
+    to = cfg.get("ALERT_EMAIL_TO", [])
+    if not to:
+        log.warning("Alta de productes detectada però ALERT_EMAIL_TO no configurat.")
+        return
+    try:
+        smtp = SMTPSettings.from_config(cfg)
+        client = EmailClient(smtp)
+
+        n = len(altes)
+        lines = [f"S'han detectat {n} producte{'s' if n > 1 else ''} d'alta durant la sincronització:\n"]
+        lines.append(f"{'Codi':<15} {'UM':<6} {'Descripció':<40} {'Preu Normal':<14} {'Preu Oferta'}")
+        lines.append("-" * 90)
+        for p in altes:
+            lines.append(
+                f"{p['codiProducte']:<15} {p['unitat']:<6} {str(p['descripcioCAT']):<40} "
+                f"{p['preuNormalTxt']:<14} {p['preuOfertaTxt']}"
+            )
+
+        client.send(
+            subject=f"[TramPy] Alta de {n} producte{'s' if n > 1 else ''} a Minew",
+            to=list(to),
+            cc=list(cfg.get("ALERT_EMAIL_CC", []) or []),
+            body_text="\n".join(lines),
+        )
+        log.info(f"📧 Notificació d'altes enviada a {to}")
+    except Exception as e:
+        log.warning(f"No s'ha pogut enviar la notificació d'altes: {e}")
+
+
 def executar_sincronitzacio():
     try:
         api = MinewAPIClient(base_url=cfg.get("MINEW_API_URL"), logger=log)
@@ -38,7 +69,10 @@ def executar_sincronitzacio():
 
         api.login(cfg.get("MINEW_API_USER"), cfg.get("MINEW_API_PASS"))
 
-        sincronitzar_system(api, db, cfg, log)
+        altes = sincronitzar_system(api, db, cfg, log)
+        if altes:
+            _enviar_notificacio_altes(altes, log)
+
         sincronitzar_botigues(api, db, cfg, log)
 
     except Exception as e:

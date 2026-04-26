@@ -3,6 +3,7 @@ from preus import obtenir_preus_producte
 
 def sincronitzar_system(api, db, cfg, log):
     log.info("--- SYSTEM DATA ---")
+    altes = []
 
     params = {"page": 1, "size": 1000}
     llista_sd = api.get(cfg.get("MINEW_API_GETSYSTEMDATA"), "rows", params=params)
@@ -32,6 +33,13 @@ def sincronitzar_system(api, db, cfg, log):
                 str(sysData.get("codiBarres", "")) != preus["codiBarres"] or
                 str(sysData.get("descompte", "")) != preus["descompte"]):
 
+            # Alta: el producte no tenia descripció ni preus abans d'aquesta sincronització
+            es_alta = (
+                not str(sysData.get("descripcioCAT", "")).strip() and
+                not sd_preu_normaltxt.strip() and
+                not sd_preu_ofertatxt.strip()
+            )
+
             payload = {
                 "id": sysData.get("id"),
                 "preuOfertaTxt": preus["preu_ofertatxt"],
@@ -47,3 +55,15 @@ def sincronitzar_system(api, db, cfg, log):
 
             api.put(cfg.get("MINEW_API_UPDSYSTEMDATA", "/sys/goods/modify"), data=payload)
             log.info(f"✅ [SYS] Actualitzat {sd_codi_art} {sd_unitat} ({sd_preu_normaltxt} : {sd_preu_ofertatxt}) -> ({preus['preu_normaltxt']} : {preus['preu_ofertatxt']}) {preus['descripcioCAT']}")
+
+            if es_alta:
+                altes.append({
+                    "codiProducte": sd_codi_art,
+                    "unitat": sd_unitat,
+                    "descripcioCAT": preus["descripcioCAT"],
+                    "preuNormalTxt": preus["preu_normaltxt"],
+                    "preuOfertaTxt": preus["preu_ofertatxt"],
+                })
+                log.info(f"🆕 [SYS] Alta detectada: {sd_codi_art} {sd_unitat} - {preus['descripcioCAT']}")
+
+    return altes
